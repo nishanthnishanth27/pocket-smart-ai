@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
@@ -12,6 +14,7 @@ from ..security import COOKIE_NAME, create_token, hash_password, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 settings = get_settings()
+logger = logging.getLogger("pocketsmart")
 
 
 def _authenticated_response(message: str, user: User) -> JSONResponse:
@@ -34,18 +37,39 @@ def _authenticated_response(message: str, user: User) -> JSONResponse:
 
 @router.post("/register")
 def register(payload: RegisterRequest, db: Session = Depends(get_db)):
-    email = payload.email.lower()
-    if db.scalar(select(User).where(User.email == email)):
-        raise HTTPException(409, "Email already registered")
-    user = User(
-        name=payload.name.strip(),
-        email=email,
-        password_hash=hash_password(payload.password),
+    logger.info(
+        "Registration request received for email=%s",
+        getattr(payload, "email", "<missing>"),
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return _authenticated_response("Registration successful", user)
+
+    try:
+        email = payload.email.lower().strip()
+
+        if db.scalar(select(User).where(User.email == email)):
+            logger.warning("Registration blocked: email already exists - %s", email)
+            raise HTTPException(409, "Email already registered")
+
+        user = User(
+            name=payload.name.strip(),
+            email=email,
+            password_hash=hash_password(payload.password),
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        logger.info("Registration successful for user_id=%s", user.id)
+        return _authenticated_response("Registration successful", user)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception(
+            "Unhandled registration failure for email=%s",
+            getattr(payload, "email", "<missing>"),
+        )
+        raise HTTPException(
+            status_code=500,
+            detail=f"Registration failed: {exc.__class__.__name__}: {str(exc)}",
+        ) from exc
 
 
 @router.post("/login")

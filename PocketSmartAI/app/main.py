@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 
 from fastapi import Depends
@@ -45,8 +46,17 @@ from .schemas import RegisterRequest
 
 
 BASE_DIR = Path(__file__).resolve().parent
+logger = logging.getLogger("pocketsmart")
 
 settings = get_settings()
+
+if not settings.secret_key or settings.secret_key == "change-this-secret-key":
+    logger.warning(
+        "SECRET_KEY is not configured. Set it in Vercel Environment Variables."
+    )
+
+if not settings.database_url:
+    logger.error("DATABASE_URL is missing in the environment.")
 
 
 # Create database tables.
@@ -231,62 +241,81 @@ def register(
     payload: RegisterRequest,
     db: Session = Depends(get_db),
 ):
-
-    email = payload.email.lower()
-
-    existing_user = db.scalar(
-        select(User).where(
-            User.email == email
-        )
+    logger.info(
+        "Registration request received for email=%s",
+        getattr(payload, "email", "<missing>"),
     )
 
-    if existing_user:
+    try:
+        email = payload.email.lower().strip()
 
+        logger.info("Checking existing user for email=%s", email)
+        existing_user = db.scalar(
+            select(User).where(
+                User.email == email
+            )
+        )
+
+        if existing_user:
+            logger.warning("Registration blocked: email already exists - %s", email)
+            raise HTTPException(
+                status_code=409,
+                detail="Email already registered",
+            )
+
+        user = User(
+            name=payload.name.strip(),
+            email=email,
+            password_hash=hash_password(
+                payload.password
+            ),
+        )
+
+        logger.info("Creating new user record for %s", email)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        token = create_token(user)
+
+        logger.info("Registration successful for user_id=%s", user.id)
+
+        response = JSONResponse(
+            {
+                "message": "Registration successful",
+                "user": {
+                    "id": user.id,
+                    "name": user.name,
+                    "email": user.email,
+                },
+            }
+        )
+
+        response.set_cookie(
+            key=COOKIE_NAME,
+            value=token,
+            httponly=True,
+            samesite="lax",
+            secure=False,
+            max_age=(
+                settings.access_token_expire_minutes
+                * 60
+            ),
+        )
+
+        return response
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception(
+            "Unhandled registration failure for email=%s",
+            getattr(payload, "email", "<missing>"),
+        )
         raise HTTPException(
-            status_code=409,
-            detail="Email already registered",
-        )
-
-    user = User(
-        name=payload.name.strip(),
-        email=email,
-        password_hash=hash_password(
-            payload.password
-        ),
-    )
-
-    db.add(user)
-
-    db.commit()
-
-    db.refresh(user)
-
-    token = create_token(user)
-
-    response = JSONResponse(
-        {
-            "message": "Registration successful",
-            "user": {
-                "id": user.id,
-                "name": user.name,
-                "email": user.email,
-            },
-        }
-    )
-
-    response.set_cookie(
-        key=COOKIE_NAME,
-        value=token,
-        httponly=True,
-        samesite="lax",
-        secure=False,
-        max_age=(
-            settings.access_token_expire_minutes
-            * 60
-        ),
-    )
-
-    return response
+            status_code=500,
+            detail=f"Registration failed: {exc.__class__.__name__}: {str(exc)}",
+        ) from exc
 
 
 @app.post("/api/auth/login")
