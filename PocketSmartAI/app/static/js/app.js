@@ -9,18 +9,28 @@ async function api(url, options = {}) {
     );
 
     let data = {};
+    let rawText = "";
 
     try {
-        data = await response.json();
+        rawText = await response.text();
+
+        if (rawText) {
+            data = JSON.parse(rawText);
+        }
     } catch {
         data = {};
     }
 
     if (!response.ok) {
+        const detail =
+            data.detail ||
+            data.message ||
+            data.error ||
+            rawText ||
+            "Something went wrong.";
 
         throw new Error(
-            data.detail ||
-            "Something went wrong."
+            `${detail} (HTTP ${response.status})`
         );
     }
 
@@ -432,10 +442,15 @@ function setupAuthentication() {
 
                 } catch (error) {
 
-                    document.getElementById(
-                        "formError"
-                    ).textContent =
-                        error.message;
+                    const formError =
+                        document.getElementById(
+                            "formError"
+                        );
+
+                    if (formError) {
+                        formError.textContent =
+                            error.message;
+                    }
                 }
             }
         );
@@ -481,10 +496,15 @@ function setupAuthentication() {
 
                 } catch (error) {
 
-                    document.getElementById(
-                        "formError"
-                    ).textContent =
-                        error.message;
+                    const formError =
+                        document.getElementById(
+                            "formError"
+                        );
+
+                    if (formError) {
+                        formError.textContent =
+                            error.message;
+                    }
                 }
             }
         );
