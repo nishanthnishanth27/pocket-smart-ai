@@ -1,0 +1,42 @@
+{% extends 'base.html' %}{% block title %}PocketSmart AI — Smart Budget Assistant{% endblock %}{% block content %}
+<section class="hero">
+    <div>
+        <p class="eyebrow">GENAI BUDGET ASSISTANT</p>
+        <h1>Plan smarter.<br><span>Spend with confidence.</span></h1>
+        <p>Personalized recommendations for home interiors, parties, and jewelry — organized around your budget.</p>
+        <div class="actions"><a class="btn primary" href="/register">Start Planning</a><a class="btn secondary"
+                href="/login">I already have an account</a></div>
+    </div>
+    <div class="hero-card">
+        <div class="wallet">◈</div>
+        <h3>PocketSmart AI</h3>
+        <p>One assistant. Three planners. Your budget first.</p>
+        <div class="mini-row"><span>Home</span><b>₹25,000</b></div>
+        <div class="mini-row"><span>Party</span><b>₹40,000</b></div>
+        <div class="mini-row"><span>Jewelry</span><b>₹20,000</b></div>
+    </div>
+</section>
+<section class="section">
+    <div class="section-head">
+        <p class="eyebrow">THREE PLANNERS</p>
+        <h2>Everything you need in one place</h2>
+    </div>
+    <div class="cards three">
+        <article class="card">
+            <div class="icon">🏠</div>
+            <h3>Home Interior</h3>
+            <p>Allocate your budget across furniture, lighting, storage, and décor.</p><a href="/register">Explore →</a>
+        </article>
+        <article class="card">
+            <div class="icon">🎉</div>
+            <h3>Party Planner</h3>
+            <p>Plan catering, decoration, entertainment, and venue needs.</p><a href="/register">Explore →</a>
+        </article>
+        <article class="card">
+            <div class="icon">💎</div>
+            <h3>Jewelry Match</h3>
+            <p>Get occasion and style-based jewelry suggestions, with optional outfit image analysis.</p><a
+                href="/register">Explore →</a>
+        </article>
+    </div>
+</section>{% endblock %}

@@ -1,0 +1,135 @@
+ {% extends "base.html" %}
+
+{% block title %}
+Dashboard — PocketSmart AI
+{% endblock %}
+
+
+{% block content %}
+
+<section class="dashboard">
+
+    <div class="section-head">
+
+        <p class="eyebrow">
+            YOUR WORKSPACE
+        </p>
+
+        <h1>
+            Hi, {{ user.name }} 👋
+        </h1>
+
+        <p>
+            Choose a planner and let PocketSmart AI
+            build a budget-aware starting plan.
+        </p>
+
+    </div>
+
+
+    <div class="cards three">
+
+        <a
+            class="card planner-card"
+            href="/planner/home"
+        >
+
+            <div class="icon">
+                🏠
+            </div>
+
+            <h3>
+                Home Interior
+            </h3>
+
+            <p>
+                Furniture, lighting,
+                storage and décor.
+            </p>
+
+            <span>
+                Plan Home →
+            </span>
+
+        </a>
+
+
+        <a
+            class="card planner-card"
+            href="/planner/party"
+        >
+
+            <div class="icon">
+                🎉
+            </div>
+
+            <h3>
+                Party
+            </h3>
+
+            <p>
+                Catering, venue,
+                decoration and entertainment.
+            </p>
+
+            <span>
+                Plan Party →
+            </span>
+
+        </a>
+
+
+        <a
+            class="card planner-card"
+            href="/planner/jewelry"
+        >
+
+            <div class="icon">
+                💎
+            </div>
+
+            <h3>
+                Jewelry
+            </h3>
+
+            <p>
+                Occasion, style and
+                optional outfit matching.
+            </p>
+
+            <span>
+                Plan Jewelry →
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div>
+
+            <h3>
+                Recent plans
+            </h3>
+
+            <p class="muted">
+                Your saved recommendation
+                history appears here.
+            </p>
+
+        </div>
+
+        <a
+            class="btn secondary"
+            href="/history"
+        >
+            View History
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

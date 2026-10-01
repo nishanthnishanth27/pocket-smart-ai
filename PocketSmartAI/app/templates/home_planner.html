@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home Planner — PocketSmart AI
+{% endblock %}
+
+
+{% block content %}
+
+<section class="planner">
+
+    <div class="section-head">
+
+        <p class="eyebrow">
+            HOME INTERIOR PLANNER
+        </p>
+
+        <h1>
+            Design within budget.
+        </h1>
+
+        <p>
+            Tell us what room you're planning
+            and which essentials you need.
+        </p>
+
+    </div>
+
+
+    <form
+        class="planner-form"
+        id="homeForm"
+    >
+
+        <div class="grid2">
+
+            <label>
+
+                Total budget (₹)
+
+                <input
+                    name="budget"
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="50000"
+                >
+
+            </label>
+
+
+            <label>
+
+                Room type
+
+                <select name="room_type">
+
+                    <option>
+                        Living Room
+                    </option>
+
+                    <option>
+                        Bedroom
+                    </option>
+
+                    <option>
+                        Kitchen
+                    </option>
+
+                    <option>
+                        Dining Room
+                    </option>
+
+                    <option>
+                        Home Office
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+
+                Style
+
+                <select name="style">
+
+                    <option>
+                        Modern
+                    </option>
+
+                    <option>
+                        Minimal
+                    </option>
+
+                    <option>
+                        Scandinavian
+                    </option>
+
+                    <option>
+                        Traditional
+                    </option>
+
+                    <option>
+                        Industrial
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+
+                City
+
+                <input
+                    name="city"
+                    value="Chennai"
+                >
+
+            </label>
+
+
+            <label class="wide">
+
+                Items / requirements
+
+                <input
+                    name="items"
+                    value="sofa, lights, ceiling fan, storage"
+                >
+
+            </label>
+
+        </div>
+
+
+        <button
+            class="btn primary"
+            type="submit"
+        >
+            Generate Home Plan
+        </button>
+
+    </form>
+
+
+    <div
+        id="result"
+        class="result"
+    ></div>
+
+</section>
+
+{% endblock %}

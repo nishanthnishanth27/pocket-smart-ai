@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}
+Jewelry Planner — PocketSmart AI
+{% endblock %}
+
+
+{% block content %}
+
+<section class="planner">
+
+    <div class="section-head">
+
+        <p class="eyebrow">
+            JEWELRY PLANNER
+        </p>
+
+        <h1>
+            Find your match.
+        </h1>
+
+        <p>
+            Describe your occasion and style.
+            Upload an outfit image if you want
+            visual color/style analysis.
+        </p>
+
+    </div>
+
+
+    <form
+        class="planner-form"
+        id="jewelryForm"
+        enctype="multipart/form-data"
+    >
+
+        <div class="grid2">
+
+            <label>
+
+                Budget (₹)
+
+                <input
+                    name="budget"
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="20000"
+                >
+
+            </label>
+
+
+            <label>
+
+                Occasion
+
+                <select name="occasion">
+
+                    <option>
+                        Wedding
+                    </option>
+
+                    <option>
+                        Party
+                    </option>
+
+                    <option>
+                        Festival
+                    </option>
+
+                    <option>
+                        Office
+                    </option>
+
+                    <option>
+                        Date
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+
+                Style
+
+                <select name="style">
+
+                    <option>
+                        Elegant
+                    </option>
+
+                    <option>
+                        Minimal
+                    </option>
+
+                    <option>
+                        Traditional
+                    </option>
+
+                    <option>
+                        Modern
+                    </option>
+
+                    <option>
+                        Statement
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+
+                City
+
+                <input
+                    name="city"
+                    value="Chennai"
+                >
+
+            </label>
+
+
+            <label class="wide">
+
+                Outfit image — optional
+
+                <input
+                    name="outfit_image"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                >
+
+                <small>
+                    JPG, PNG or WEBP · Maximum 5 MB
+                </small>
+
+            </label>
+
+        </div>
+
+
+        <button
+            class="btn primary"
+            type="submit"
+        >
+            Generate Jewelry Plan
+        </button>
+
+    </form>
+
+
+    <div
+        id="result"
+        class="result"
+    ></div>
+
+</section>
+
+{% endblock %}
